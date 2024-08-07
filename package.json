@@ -1,6 +1,6 @@
 {
   "name": "@rdfc/log-processor-ts",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A simple processor to log an incoming stream to the console for the RDF Connect framework.",
   "type": "module",
   "main": "lib/index.js",
