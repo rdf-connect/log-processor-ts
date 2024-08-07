@@ -19,6 +19,18 @@ js:Log a js:JsProcess;
             a fnom:PositionParameterMapping;
             fnom:functionParameter "outgoing";
             fnom:implementationParameterPosition "1"^^xsd:int;
+        ], [
+            a fnom:PositionParameterMapping;
+            fnom:functionParameter "label";
+            fnom:implementationParameterPosition "2"^^xsd:int;
+        ], [
+            a fnom:PositionParameterMapping;
+            fnom:functionParameter "level";
+            fnom:implementationParameterPosition "3"^^xsd:int;
+        ], [
+            a fnom:PositionParameterMapping;
+            fnom:functionParameter "raw";
+            fnom:implementationParameterPosition "4"^^xsd:int;
         ];
     ].
 
@@ -35,5 +47,23 @@ js:Log a js:JsProcess;
         sh:path js:outgoing;
         sh:name "outgoing";
         sh:maxCount 1;
-        sh:minCount 1;
+        sh:minCount 0;
+    ], [
+        sh:datatype xsd:string;
+        sh:path js:label;
+        sh:name "label";
+        sh:minCount 0;
+        sh:maxCount 1;
+    ], [
+        sh:datatype xsd:string;
+        sh:path js:level;
+        sh:name "level";
+        sh:minCount 0;
+        sh:maxCount 1;
+    ], [
+        sh:datatype xsd:boolean;
+        sh:path js:raw;
+        sh:name "raw";
+        sh:minCount 0;
+        sh:maxCount 1;
     ].

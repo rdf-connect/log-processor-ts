@@ -32,7 +32,7 @@ describe("log", () => {
         });
 
         // Initialize the processor.
-        const startLogging = log(incoming, outgoing);
+        const startLogging = log(incoming, outgoing, "test", "info", true);
         await startLogging();
 
         // Push all messages into the pipeline.

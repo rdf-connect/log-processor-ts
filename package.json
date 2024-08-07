@@ -1,7 +1,7 @@
 {
-  "name": "@rdfc/template-processor-ts",
+  "name": "@rdfc/log-processor-ts",
   "version": "0.0.0",
-  "description": "Template to kickstart the development of your next TypeScript processor.",
+  "description": "A simple processor to log an incoming stream to the console for the RDF Connect framework.",
   "type": "module",
   "main": "lib/index.js",
   "files": [
@@ -15,12 +15,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/rdf-connect/template-processor-ts"
+    "url": "https://github.com/rdf-connect/log-processor-ts"
   },
-  "author": "Jens Pots",
-  "contributors": [
-    "Ieben Smessaert"
-  ],
+  "author": "Ieben Smessaert",
   "license": "MIT",
   "devDependencies": {
     "@rdfc/file-utils-processors-ts": "^0.5.4",

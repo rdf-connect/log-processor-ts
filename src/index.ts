@@ -1,19 +1,23 @@
 import { Stream, Writer } from "@rdfc/js-runner";
 import { getLoggerFor } from "./utils/logUtil";
 
-const logger = getLoggerFor("log");
-
 /**
  * The logging function is a very simple processor which simply logs the
  * incoming stream to the console and pipes it directly into the outgoing
- * stream.
+ * stream. Uses Winston to format the log messages, unless the raw flag is set.
  *
  * @param incoming The data stream which must be logged.
  * @param outgoing The data stream into which the incoming stream is written.
+ * @param label The label to use for the log messages. Default is "log".
+ * @param level The log level to use for the log messages. Default is "info".
+ * @param raw Whether to log the raw data or not. Default is false.
  */
 export function log(
     incoming: Stream<string>,
-    outgoing: Writer<string>,
+    outgoing?: Writer<string>,
+    label: string = "log",
+    level: string = "info",
+    raw: boolean = false,
 ): () => Promise<void> {
     /**************************************************************************
      * This is where you set up your processor. This includes reading         *
@@ -25,20 +29,25 @@ export function log(
      * any data into the pipeline here.                                       *
      **************************************************************************/
 
-    incoming.on("data", (data) => {
-        outgoing
-            .push(data) // Push data into outgoing stream.
-            .then(() => console.log(data)) // Only print if successful.
-            .finally(); // Ignore any errors.
+    const logger = getLoggerFor(label);
+
+    incoming.on("data", async (data) => {
+        // Log the data to the console.
+        if (raw) {
+            console.log(data);
+        } else {
+            logger.log(level, data);
+        }
+
+        // Push data into outgoing stream.
+        await outgoing?.push(data);
     });
 
     // If a processor upstream terminates the channel, we propagate this change
     // onto the processors downstream.
-    incoming.on("end", () => {
-        outgoing
-            .end()
-            .then(() => logger.info("Incoming stream terminated."))
-            .finally();
+    incoming.on("end", async () => {
+        logger.info("[processor] Incoming stream terminated.");
+        await outgoing?.end();
     });
 
     /**************************************************************************

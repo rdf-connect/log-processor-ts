@@ -24,4 +24,7 @@
 
 [ ] a js:Log;
     js:incoming <input/reader>;
-    js:outgoing <outgoing>.
+    js:outgoing <outgoing>;
+    js:label "example";
+    js:level "info";
+    js:raw false.

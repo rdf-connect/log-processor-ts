@@ -3,12 +3,8 @@ import { extractProcessors, extractSteps, Source } from "@rdfc/js-runner";
 
 const pipeline = `
         @prefix js: <https://w3id.org/conn/js#>.
-        @prefix ws: <https://w3id.org/conn/ws#>.
         @prefix : <https://w3id.org/conn#>.
         @prefix owl: <http://www.w3.org/2002/07/owl#>.
-        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
-        @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
-        @prefix sh: <http://www.w3.org/ns/shacl#>.
 
         <> owl:imports <./node_modules/@rdfc/js-runner/ontology.ttl>, <./processor.ttl>.
 
@@ -21,12 +17,15 @@ const pipeline = `
 
         [ ] a js:Log;
             js:incoming <incoming>;
-            js:outgoing <outgoing>.
+            js:outgoing <outgoing>;
+            js:label "test";
+            js:level "warn";
+            js:raw true.
     `;
 
 describe("processor", () => {
     test("definition", async () => {
-        expect.assertions(5);
+        expect.assertions(8);
 
         const source: Source = {
             value: pipeline,
@@ -47,10 +46,13 @@ describe("processor", () => {
 
         const args = extractSteps(env, quads, config);
         expect(args.length).toBe(1);
-        expect(args[0].length).toBe(2);
+        expect(args[0].length).toBe(5);
 
-        const [[incoming, outgoing]] = args;
+        const [[incoming, outgoing, label, level, raw]] = args;
         expect(incoming.ty.id).toBe("https://w3id.org/conn/js#JsReaderChannel");
         expect(outgoing.ty.id).toBe("https://w3id.org/conn/js#JsWriterChannel");
+        expect(label).toBe("test");
+        expect(level).toBe("warn");
+        expect(raw).toBe(true);
     });
 });
