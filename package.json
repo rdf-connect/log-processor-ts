@@ -38,6 +38,6 @@
     "vitest": "^1.6.0"
   },
   "dependencies": {
-    "winston": "^3.16.0"
+    "winston": "^3.17.0"
   }
 }
