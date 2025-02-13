@@ -49,8 +49,12 @@ describe("processor", () => {
         expect(args[0].length).toBe(5);
 
         const [[incoming, outgoing, label, level, raw]] = args;
-        expect(incoming.ty.id).toBe("https://w3id.org/conn/js#JsReaderChannel");
-        expect(outgoing.ty.id).toBe("https://w3id.org/conn/js#JsWriterChannel");
+        expect(incoming.ty.value).toBe(
+            "https://w3id.org/conn/js#JsReaderChannel",
+        );
+        expect(outgoing.ty.value).toBe(
+            "https://w3id.org/conn/js#JsWriterChannel",
+        );
         expect(label).toBe("test");
         expect(level).toBe("warn");
         expect(raw).toBe(true);
