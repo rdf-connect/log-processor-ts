@@ -1,46 +1,64 @@
-import { log } from "../src";
-import { SimpleStream } from "@rdfc/js-runner";
-import { expect, describe, test, vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
+import { LogProcessor } from "../src";
+import { createWriter, logger } from "@rdfc/js-runner/lib/testUtils";
+import { FullProc } from "@rdfc/js-runner";
 
-describe("log", () => {
-    test("successful", async () => {
+describe("Functional tests for the Log processor", () => {
+    test("Log works in raw mode", async () => {
         const consoleLog = vi.spyOn(console, "log");
         expect.assertions(7);
 
-        const incoming = new SimpleStream<string>();
-        const outgoing = new SimpleStream<string>();
+        const [inputWriter, inputReader] = createWriter();
+        const [outputWriter, outputReader] = createWriter();
 
-        // We expect each one of the messages to have been logged.
-        outgoing.on("end", () => {
-            const calls = consoleLog.mock.calls;
-            expect(calls).toHaveLength(3);
-            expect(calls[0][0]).toBe("Hello, World!");
-            expect(calls[1][0]).toBe("This is a second message");
-            expect(calls[2][0]).toBe("Goodbye.");
-        });
+        const proc = <FullProc<LogProcessor>>new LogProcessor(
+            {
+                reader: inputReader, // SHACL-compliant field
+                writer: outputWriter, // SHACL-compliant field
+                label: "test",
+                level: "info",
+                raw: true,
+            },
+            logger,
+        );
 
-        let index = 0;
-        outgoing.on("data", (data) => {
-            if (index == 0) {
-                expect(data).toBe("Hello, World!");
-            } else if (index == 1) {
-                expect(data).toBe("This is a second message");
-            } else {
-                expect(data).toBe("Goodbye.");
-            }
-            index += 1;
-        });
+        await proc.init();
+        const prom = proc.transform();
 
-        // Initialize the processor.
-        const startLogging = log(incoming, outgoing, "test", "info", true);
-        await startLogging();
+        // Push messages into input
+        await inputWriter.string("Hello, World!");
+        await inputWriter.string("This is a second message");
+        await inputWriter.string("Goodbye.");
+        await inputWriter.close();
 
-        // Push all messages into the pipeline.
-        await incoming.push("Hello, World!");
-        await incoming.push("This is a second message");
-        await incoming.push("Goodbye.");
+        // Close reader so iteration finishes
+        outputReader.close();
 
-        await incoming.end();
+        // Collect output
+        const collected: string[] = [];
+        for await (const msg of outputReader.strings()) {
+            collected.push(msg);
+        }
+
+        // Wait for processor to finish
+        await prom;
+
+        console.log("collected", collected);
+
+        // Assertions on output data
+        expect(collected).toEqual([
+            "Hello, World!",
+            "This is a second message",
+            "Goodbye.",
+        ]);
+
+        // Assertions on console.log calls
+        const calls = consoleLog.mock.calls;
+        expect(calls).toHaveLength(3);
+        expect(calls[0][0]).toBe("Hello, World!");
+        expect(calls[1][0]).toBe("This is a second message");
+        expect(calls[2][0]).toBe("Goodbye.");
+
         consoleLog.mockRestore();
     });
 });

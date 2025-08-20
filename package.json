@@ -1,7 +1,7 @@
 {
   "name": "@rdfc/log-processor-ts",
-  "version": "1.0.0",
-  "description": "A simple processor to log an incoming stream to the console for the RDF Connect framework.",
+  "version": "2.0.0",
+  "description": "A simple processor to log an incoming stream to RDF-Connect logging system.",
   "type": "module",
   "main": "lib/index.js",
   "files": [
@@ -20,8 +20,10 @@
   "author": "Ieben Smessaert",
   "license": "MIT",
   "devDependencies": {
-    "@rdfc/file-utils-processors-ts": "^0.6.0",
-    "@rdfc/js-runner": "^1.0.0",
+    "@rdfc/js-runner": "^2.0.0-alpha.9",
+    "@rdfjs/types": "^2.0.1",
+    "@treecg/types": "^0.4.6",
+    "@types/n3": "^1.26.0",
     "@typescript-eslint/eslint-plugin": "^8.40.0",
     "@typescript-eslint/parser": "^8.40.0",
     "@vitest/coverage-v8": "^3.2.4",
@@ -30,7 +32,9 @@
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.5",
+    "n3": "^1.26.0",
     "prettier": "^3.6.2",
+    "rdf-lens": "^1.3.6",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.16",
     "typescript": "^5.9.2",

@@ -2,7 +2,7 @@
 
 [![Build and tests with Node.js](https://github.com/rdf-connect/log-processor-ts/actions/workflows/build-test.yml/badge.svg)](https://github.com/rdf-connect/log-processor-ts/actions/workflows/build-test.yml)
 
-This repository contains a simple processor to log an incoming stream to the console for the RDF Connect framework.
+This repository contains a simple processor to log an incoming stream to the RDF-Connect logging system.
 
 The processor accepts input from a stream, logs it to the console, and pipes it back into the outgoing stream.
 Winston is used to log the incoming data, unless the `raw` option is set to `true`, in which case the data is logged
@@ -10,16 +10,16 @@ using `console.log`.
 
 ## Configuration
 
-The processor can be configured using the following parameters:
+Parameters of `rdfc:SendProcessorJs`:
+- `rdfc:writer`: The channel to which the processor will write messages.
+- `rdfc:msg`: The messages to be sent by the processor.
 
-* `incoming`: The incoming stream to log.
-* `outgoing`: The outgoing stream to pipe the incoming data to. If not set, the incoming data will not be piped to any
-  stream.
-* `label`: The label to use for the log messages. The default value is `log`.
-* `level`: The log level to use when logging the incoming data. This can be one of the following
-  values: `error`, `warn`, `info`, `http`, `verbose`, `debug`, `silly`. The default value is `info`.
-* `raw`: If set to `true`, the incoming data will be logged using `console.log` instead of Winston. The default value
-  is `false`.
+Parameters of `rdfc:LogProcessorJs`:
+- `rdfc:reader`: The channel from which the processor will read messages.
+- `rdfc:writer`: The channel to which the processor will write log messages (optional).
+- `rdfc:level`: The log level to use (e.g., "debug", "info", "warning", "error", "critical"). Defaults to "info".
+- `rdfc:label`: A label for the log messages, which can be used to filter or categorize logs. Defaults to "log".
+- `rdfc:raw`: If set to `true`, the processor will log raw messages to stdout without any formatting instead of to the RDF-Connect logging system. Defaults to `false`.
 
 ## Installation
 

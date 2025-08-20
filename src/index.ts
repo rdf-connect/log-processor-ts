@@ -1,67 +1,70 @@
-import { Stream, Writer } from "@rdfc/js-runner";
-import { getLoggerFor } from "./utils/logUtil";
+import { extendLogger, Processor, Reader, Writer } from "@rdfc/js-runner";
+import { Logger } from "winston";
+
+type LogArgs = {
+    reader: Reader;
+    writer?: Writer;
+    label?: string;
+    level?: string;
+    raw?: boolean;
+};
 
 /**
- * The logging function is a very simple processor which simply logs the
- * incoming stream to the console and pipes it directly into the outgoing
- * stream. Uses Winston to format the log messages, unless the raw flag is set.
- *
- * @param incoming The data stream which must be logged.
- * @param outgoing The data stream into which the incoming stream is written.
- * @param label The label to use for the log messages. Default is "log".
- * @param level The log level to use for the log messages. Default is "info".
- * @param raw Whether to log the raw data or not. Default is false.
+ * The Log processor is a simple processor that logs incoming data to the console
+ * and optionally pipes it to an outgoing stream. It uses Winston for logging,
+ * unless the `raw` flag is set, in which case it logs the raw data.
  */
-export function log(
-    incoming: Stream<string>,
-    outgoing?: Writer<string>,
-    label: string = "log",
-    level: string = "info",
-    raw: boolean = false,
-): () => Promise<void> {
-    /**************************************************************************
-     * This is where you set up your processor. This includes reading         *
-     * configuration files, initializing class instances, etc. You are        *
-     * guaranteed that no data will flow in the pipeline as long as your      *
-     * processor function has not returned here.                              *
-     *                                                                        *
-     * You must therefore initialize the data handlers, but you may not push  *
-     * any data into the pipeline here.                                       *
-     **************************************************************************/
+export class LogProcessor extends Processor<LogArgs> {
+    private msgLogger: Logger;
 
-    const logger = getLoggerFor(label);
+    async init(this: LogArgs & this): Promise<void> {
+        this.msgLogger = extendLogger(this.logger, this.label || "log");
+    }
 
-    incoming.on("data", async (data) => {
-        // Log the data to the console.
-        if (raw) {
-            console.log(data);
-        } else {
-            logger.log(level, data);
+    async transform(this: LogArgs & this): Promise<void> {
+        for await (const msg of this.reader.strings()) {
+            // Log the data to the console.
+            if (this.raw) {
+                console.log(msg);
+            } else {
+                this.msgLogger.log(this.level || "info", msg);
+            }
+
+            // Push data into outgoing stream.
+            if (this.writer) {
+                await this.writer.string(msg);
+            }
         }
 
-        // Push data into outgoing stream.
-        await outgoing?.push(data);
-    });
+        // Close the writer if it exists.
+        if (this.writer) {
+            await this.writer.close();
+        }
+    }
 
-    // If a processor upstream terminates the channel, we propagate this change
-    // onto the processors downstream.
-    incoming.on("end", async () => {
-        logger.info("[processor] Incoming stream terminated.");
-        await outgoing?.end();
-    });
+    async produce(this: LogArgs & this): Promise<void> {
+        // nothing
+    }
+}
 
-    /**************************************************************************
-     * Any code that must be executed after the pipeline goes online must be  *
-     * embedded in the returned function. This guarantees that all channels   *
-     * are initialized and the other processors are available. A common use   *
-     * case is the source processor, which introduces data into the pipeline  *
-     * from an external source such as the file system or an HTTP API, since  *
-     * these must be certain that the downstream processors are ready and     *
-     * awaiting data.                                                         *
-     *                                                                        *
-     * Note that this entirely optional, and you may return void instead.     *
-     **************************************************************************/
-    return async () => {
-        // await outgoing.push("You're being logged. Do not resist.");
-    };
+type SendArgs = {
+    msgs: string[];
+    writer: Writer;
+};
+
+export class SendProcessor extends Processor<SendArgs> {
+    async init(this: SendArgs & this): Promise<void> {}
+
+    async transform(this: SendArgs & this): Promise<void> {}
+
+    async produce(this: SendArgs & this): Promise<void> {
+        for (const msg of this.msgs) {
+            await this.writer.string(msg);
+
+            this.logger.info("Sending " + msg);
+            await new Promise((res) => setTimeout(res, 1000));
+        }
+        await this.writer.close();
+        this.logger.debug("Closed");
+    }
 }
