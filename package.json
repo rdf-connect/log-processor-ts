@@ -20,7 +20,7 @@
   "author": "Ieben Smessaert",
   "license": "MIT",
   "devDependencies": {
-    "@rdfc/js-runner": "^2.0.0-alpha.9",
+    "@rdfc/js-runner": "^2.0.0-alpha.10",
     "@rdfjs/types": "^2.0.1",
     "@treecg/types": "^0.4.6",
     "@types/n3": "^1.26.0",
