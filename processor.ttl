@@ -45,6 +45,8 @@ rdfc:LogProcessorJs rdfc:jsImplementationOf rdfc:Processor;
     ].
 
 rdfc:SendProcessorJs rdfc:jsImplementationOf rdfc:Processor;
+  rdfs:label "JS/TS Send Processor";
+  rdfs:comment "A simple JS/TS processor to send messages to a writer channel.";
   rdfc:entrypoint <./>;
   rdfc:file <./lib/index.js>;
   rdfc:class "SendProcessor".

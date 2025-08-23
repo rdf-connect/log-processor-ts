@@ -149,7 +149,7 @@ describe("Log processor tests", async () => {
 
         const processor = await getProc<LogProcessor>(
             processorConfig,
-            "LogProcessor",
+            "LogProcessorJs",
             configLocation,
         );
         await processor.init();
@@ -159,5 +159,28 @@ describe("Log processor tests", async () => {
         expect(processor.label).toBe("test");
         expect(processor.level).toBe("warn");
         expect(processor.raw).toBe(true);
+    });
+});
+
+describe("Send processor tests", async () => {
+    test("rdfc:SendProcessorJs is properly defined", async () => {
+        const processorConfig = `
+        @prefix rdfc: <https://w3id.org/rdf-connect#>.
+
+        <http://example.com/ns#processor> a rdfc:SendProcessorJs;
+          rdfc:msg "Hello", "World";
+          rdfc:writer <jw>.
+        `;
+
+        const configLocation = process.cwd() + "/processor.ttl";
+        await checkProcDefinition(configLocation, "SendProcessorJs");
+
+        const processor = await getProc<
+            Processor<{ msgs: string[]; writer: Writer }>
+        >(processorConfig, "SendProcessorJs", configLocation);
+        await processor.init();
+
+        expect(processor.writer).toBeInstanceOf(WriterInstance);
+        expect(processor.msgs).toEqual(["Hello", "World"]);
     });
 });
