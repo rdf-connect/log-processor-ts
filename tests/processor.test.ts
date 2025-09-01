@@ -1,62 +1,60 @@
-import { expect, test, describe } from "vitest";
-import { extractProcessors, extractSteps, Source } from "@rdfc/js-runner";
+import { describe, expect, test } from "vitest";
+import { Processor } from "@rdfc/js-runner";
+import { checkProcDefinition, getProc } from "@rdfc/js-runner/lib/testUtils";
+import { Writer } from "n3";
 
-const pipeline = `
-        @prefix js: <https://w3id.org/conn/js#>.
-        @prefix : <https://w3id.org/conn#>.
-        @prefix owl: <http://www.w3.org/2002/07/owl#>.
+import { LogProcessor } from "../src";
 
-        <> owl:imports <./node_modules/@rdfc/js-runner/ontology.ttl>, <./processor.ttl>.
+describe("Log processor tests", async () => {
+    test("rdfc:LogProcessorJs is properly defined", async () => {
+        const processorConfig = `
+        @prefix rdfc: <https://w3id.org/rdf-connect#>.
 
-        [ ] a :Channel;
-            :reader <incoming>.
-        [ ] a :Channel;
-            :writer <outgoing>.
-        <incoming> a js:JsReaderChannel.
-        <outgoing> a js:JsWriterChannel.
+        <http://example.com/ns#processor> a rdfc:LogProcessorJs;
+          rdfc:reader <jr>;
+          rdfc:writer <jw>;
+          rdfc:label "test";
+          rdfc:level "warn";
+          rdfc:raw true.
+        `;
 
-        [ ] a js:Log;
-            js:incoming <incoming>;
-            js:outgoing <outgoing>;
-            js:label "test";
-            js:level "warn";
-            js:raw true.
-    `;
+        const configLocation = process.cwd() + "/processor.ttl";
+        await checkProcDefinition(configLocation, "LogProcessorJs");
 
-describe("processor", () => {
-    test("definition", async () => {
-        expect.assertions(8);
-
-        const source: Source = {
-            value: pipeline,
-            baseIRI: process.cwd() + "/config.ttl",
-            type: "memory",
-        };
-
-        // Parse pipeline into processors.
-        const {
-            processors,
-            quads,
-            shapes: config,
-        } = await extractProcessors(source);
-
-        // Extract the Log processor.
-        const env = processors.find((x) => x.ty.value.endsWith("Log"))!;
-        expect(env).toBeDefined();
-
-        const args = extractSteps(env, quads, config);
-        expect(args.length).toBe(1);
-        expect(args[0].length).toBe(5);
-
-        const [[incoming, outgoing, label, level, raw]] = args;
-        expect(incoming.ty.value).toBe(
-            "https://w3id.org/conn/js#JsReaderChannel",
+        const processor = await getProc<LogProcessor>(
+            processorConfig,
+            "LogProcessorJs",
+            configLocation,
         );
-        expect(outgoing.ty.value).toBe(
-            "https://w3id.org/conn/js#JsWriterChannel",
-        );
-        expect(label).toBe("test");
-        expect(level).toBe("warn");
-        expect(raw).toBe(true);
+        await processor.init();
+
+        expect(processor.reader.constructor.name).toBe("ReaderInstance");
+        expect(processor.writer?.constructor.name).toBe("WriterInstance");
+        expect(processor.label).toBe("test");
+        expect(processor.level).toBe("warn");
+        expect(processor.raw).toBe(true);
+    });
+});
+
+describe("Send processor tests", async () => {
+    test("rdfc:SendProcessorJs is properly defined", async () => {
+        const processorConfig = `
+        @prefix rdfc: <https://w3id.org/rdf-connect#>.
+
+        <http://example.com/ns#processor> a rdfc:SendProcessorJs;
+          rdfc:msg "Hello", "World";
+          rdfc:writer <jw>.
+        `;
+
+        const configLocation = process.cwd() + "/processor.ttl";
+        await checkProcDefinition(configLocation, "SendProcessorJs");
+
+        const processor = await getProc<
+            Processor<{ msgs: string[]; writer: Writer }>
+        >(processorConfig, "SendProcessorJs", configLocation);
+        await processor.init();
+
+        expect(processor.writer.constructor.name).toBe("WriterInstance");
+        expect(processor.msgs).toEqual(["Hello", "World"]);
     });
 });
