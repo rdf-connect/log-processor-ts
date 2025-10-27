@@ -1,9 +1,8 @@
 import { describe, expect, test } from "vitest";
-import { Processor } from "@rdfc/js-runner";
-import { checkProcDefinition, getProc } from "@rdfc/js-runner/lib/testUtils";
-import { Writer } from "n3";
+import { ProcHelper } from "@rdfc/js-runner/lib/testUtils";
+import * as path from "path";
 
-import { LogProcessor } from "../src";
+import { LogProcessor, SendProcessor } from "../src";
 
 describe("Log processor tests", async () => {
     test("rdfc:LogProcessorJs is properly defined", async () => {
@@ -18,15 +17,22 @@ describe("Log processor tests", async () => {
           rdfc:raw true.
         `;
 
-        const configLocation = process.cwd() + "/processor.ttl";
-        await checkProcDefinition(configLocation, "LogProcessorJs");
+        const helper = new ProcHelper<LogProcessor>();
 
-        const processor = await getProc<LogProcessor>(
+        await helper.importFile(path.resolve("./processor.ttl"));
+        await helper.importInline(
+            path.resolve("pipeline.ttl"),
             processorConfig,
-            "LogProcessorJs",
-            configLocation,
         );
-        await processor.init();
+        const config = helper.getConfig("LogProcessorJs");
+
+        expect(config.location).toBeDefined();
+        expect(config.file).toBeDefined();
+        expect(config.clazz).toEqual("LogProcessor");
+
+        const processor = await helper.getProcessor(
+            "http://example.com/ns#processor",
+        );
 
         expect(processor.reader.constructor.name).toBe("ReaderInstance");
         expect(processor.writer?.constructor.name).toBe("WriterInstance");
@@ -46,13 +52,23 @@ describe("Send processor tests", async () => {
           rdfc:writer <jw>.
         `;
 
-        const configLocation = process.cwd() + "/processor.ttl";
-        await checkProcDefinition(configLocation, "SendProcessorJs");
+        const helper = new ProcHelper<SendProcessor>();
 
-        const processor = await getProc<
-            Processor<{ msgs: string[]; writer: Writer }>
-        >(processorConfig, "SendProcessorJs", configLocation);
-        await processor.init();
+        await helper.importFile(path.resolve("./processor.ttl"));
+        await helper.importInline(
+            path.resolve("pipeline.ttl"),
+            processorConfig,
+        );
+
+        const config = helper.getConfig("SendProcessorJs");
+
+        expect(config.location).toBeDefined();
+        expect(config.file).toBeDefined();
+        expect(config.clazz).toEqual("SendProcessor");
+
+        const processor = await helper.getProcessor(
+            "http://example.com/ns#processor",
+        );
 
         expect(processor.writer.constructor.name).toBe("WriterInstance");
         expect(processor.msgs).toEqual(["Hello", "World"]);
