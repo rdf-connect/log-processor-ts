@@ -1,15 +1,23 @@
 import { describe, expect, test, vi } from "vitest";
 import { LogProcessor } from "../src";
-import { createWriter, logger } from "@rdfc/js-runner/lib/testUtils";
-import { FullProc } from "@rdfc/js-runner";
+import { channel, createRunner } from "@rdfc/js-runner/lib/testUtils/index";
+import { FullProc } from "@rdfc/js-runner/lib/runner";
+import { createLogger, transports } from "winston";
+
+const logger = createLogger({
+    transports: new transports.Console({
+        level: process.env["DEBUG"] || "info",
+    }),
+});
 
 describe("Functional tests for the Log processor", () => {
     test("Log works in raw mode", async () => {
+        const runner = createRunner();
         const consoleLog = vi.spyOn(console, "log");
         expect.assertions(5);
 
-        const [inputWriter, inputReader] = createWriter();
-        const [outputWriter, outputReader] = createWriter();
+        const [inputWriter, inputReader] = channel(runner, "input");
+        const [outputWriter, outputReader] = channel(runner, "output");
 
         const proc = <FullProc<LogProcessor>>new LogProcessor(
             {
@@ -43,7 +51,7 @@ describe("Functional tests for the Log processor", () => {
         await inputWriter.close();
 
         // Close reader so iteration finishes
-        outputReader.close();
+        await outputWriter.close();
 
         // Collect output
         const collected = await readPromise;

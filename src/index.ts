@@ -17,6 +17,10 @@ type LogArgs = {
 export class LogProcessor extends Processor<LogArgs> {
     private msgLogger: Logger;
 
+    constructor(args: LogArgs, logger: Logger) {
+        super(args, logger);
+    }
+
     async init(this: LogArgs & this): Promise<void> {
         this.msgLogger = extendLogger(this.logger, this.label || "log");
     }
