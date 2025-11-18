@@ -1,6 +1,6 @@
 {
   "name": "@rdfc/log-processor-ts",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "A simple processor to log an incoming stream to RDF-Connect logging system.",
   "type": "module",
   "main": "lib/index.js",
@@ -11,6 +11,7 @@
   "scripts": {
     "build": "tsc && tsc-alias",
     "test": "vitest run --coverage --coverage.include src",
+    "prepublishOnly": "npm run build",
     "prepare": "husky"
   },
   "repository": {
