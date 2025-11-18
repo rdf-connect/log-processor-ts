@@ -1,6 +1,6 @@
 # log-processor-ts
 
-[![Build and tests with Node.js](https://github.com/rdf-connect/log-processor-ts/actions/workflows/build-test.yml/badge.svg)](https://github.com/rdf-connect/log-processor-ts/actions/workflows/build-test.yml)
+[![Build and tests with Node.js](https://github.com/rdf-connect/log-processor-ts/actions/workflows/build-test.yml/badge.svg)](https://github.com/rdf-connect/log-processor-ts/actions/workflows/build-test.yml) [![npm](https://img.shields.io/npm/v/@rdfc/log-processor-ts.svg?style=popout)](https://npmjs.com/package/@rdfc/log-processor-ts)
 
 This repository contains a simple processor to log an incoming stream to the RDF-Connect logging system.
 
@@ -66,4 +66,5 @@ Parameters of `rdfc:LogProcessorJs`:
 - `rdfc:level`: The log level to use (e.g., "debug", "info", "warning", "error", "critical"). Defaults to "info".
 - `rdfc:label`: A label for the log messages, which can be used to filter or categorize logs. Defaults to "log".
 - `rdfc:raw`: If set to `true`, the processor will log raw messages to stdout without any formatting instead of to the RDF-Connect logging system. Defaults to `false`.
+- `rdfc:readAsStream`: If set to `true` the processor will process the input as a stream.
 

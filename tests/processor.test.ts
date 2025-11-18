@@ -14,7 +14,8 @@ describe("Log processor tests", async () => {
           rdfc:writer <jw>;
           rdfc:label "test";
           rdfc:level "warn";
-          rdfc:raw true.
+          rdfc:raw true;
+          rdfc:readAsStream false.
         `;
 
         const helper = new ProcHelper<LogProcessor>();
@@ -39,6 +40,7 @@ describe("Log processor tests", async () => {
         expect(processor.label).toBe("test");
         expect(processor.level).toBe("warn");
         expect(processor.raw).toBe(true);
+        expect(processor.readAsStream).toBe(false);
     });
 });
 

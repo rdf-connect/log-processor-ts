@@ -42,6 +42,12 @@ rdfc:LogProcessorJs rdfc:jsImplementationOf rdfc:Processor;
         sh:name "raw";
         sh:minCount 0;
         sh:maxCount 1;
+    ], [
+        sh:datatype xsd:boolean;
+        sh:path rdfc:readAsStream;
+        sh:name "readAsStream";
+        sh:minCount 0;
+        sh:maxCount 1;
     ].
 
 rdfc:SendProcessorJs rdfc:jsImplementationOf rdfc:Processor;
