@@ -27,7 +27,7 @@
     "@types/n3": "^1.26.1",
     "@typescript-eslint/eslint-plugin": "^8.59.4",
     "@typescript-eslint/parser": "^8.59.4",
-    "@vitest/coverage-v8": "^4.1.6",
+    "@vitest/coverage-v8": "^4.1.7",
     "dotenv": "^17.4.2",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^10.1.8",
@@ -40,7 +40,7 @@
     "tsc-alias": "^1.8.17",
     "typescript": "^6.0.3",
     "vite-tsconfig-paths": "^6.1.1",
-    "vitest": "^4.1.6"
+    "vitest": "^4.1.7"
   },
   "dependencies": {
     "winston": "^3.19.0"
