@@ -28,24 +28,28 @@ rdfc:LogProcessorJs rdfc:jsImplementationOf rdfc:Processor;
         sh:datatype xsd:string;
         sh:path rdfc:label;
         sh:name "label";
+        sh:defaultValue "log";
         sh:minCount 0;
         sh:maxCount 1;
     ], [
         sh:datatype xsd:string;
         sh:path rdfc:level;
         sh:name "level";
+        sh:defaultValue "info";
         sh:minCount 0;
         sh:maxCount 1;
     ], [
         sh:datatype xsd:boolean;
         sh:path rdfc:raw;
         sh:name "raw";
+        sh:defaultValue false;
         sh:minCount 0;
         sh:maxCount 1;
     ], [
         sh:datatype xsd:boolean;
         sh:path rdfc:readAsStream;
         sh:name "readAsStream";
+        sh:defaultValue false;
         sh:minCount 0;
         sh:maxCount 1;
     ].
