@@ -4,10 +4,10 @@ import { Logger } from "winston";
 type LogArgs = {
     reader: Reader;
     writer?: Writer;
-    label?: string;
-    level?: string;
-    raw?: boolean;
-    readAsStream?: boolean;
+    label: string;
+    level: string;
+    raw: boolean;
+    readAsStream: boolean;
 };
 
 /**
@@ -23,7 +23,7 @@ export class LogProcessor extends Processor<LogArgs> {
     }
 
     async init(this: LogArgs & this): Promise<void> {
-        this.msgLogger = extendLogger(this.logger, this.label || "log");
+        this.msgLogger = extendLogger(this.logger, this.label);
     }
 
     async transform(this: LogArgs & this): Promise<void> {
@@ -33,10 +33,7 @@ export class LogProcessor extends Processor<LogArgs> {
                     if (this.raw) {
                         process.stdout.write(chunk);
                     } else {
-                        this.msgLogger.log(
-                            this.level || "info",
-                            chunk.toString(),
-                        );
+                        this.msgLogger.log(this.level, chunk.toString());
                     }
                 }
             }
@@ -46,7 +43,7 @@ export class LogProcessor extends Processor<LogArgs> {
                 if (this.raw) {
                     console.log(msg);
                 } else {
-                    this.msgLogger.log(this.level || "info", msg);
+                    this.msgLogger.log(this.level, msg);
                 }
 
                 // Push data into outgoing stream.
