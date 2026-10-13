@@ -42,6 +42,34 @@ describe("Log processor tests", async () => {
         expect(processor.raw).toBe(true);
         expect(processor.readAsStream).toBe(false);
     });
+
+    test("rdfc:LogProcessorJs falls back to its default values", async () => {
+        const processorConfig = `
+        @prefix rdfc: <https://w3id.org/rdf-connect#>.
+
+        <http://example.com/ns#processor> a rdfc:LogProcessorJs;
+          rdfc:reader <jr>.
+        `;
+
+        const helper = new ProcHelper<LogProcessor>();
+
+        await helper.importFile(path.resolve("./processor.ttl"));
+        await helper.importInline(
+            path.resolve("pipeline.ttl"),
+            processorConfig,
+        );
+        helper.getConfig("LogProcessorJs");
+
+        const processor = await helper.getProcessor(
+            "http://example.com/ns#processor",
+        );
+
+        expect(processor.writer).toBeUndefined();
+        expect(processor.label).toBe("log");
+        expect(processor.level).toBe("info");
+        expect(processor.raw).toBe(false);
+        expect(processor.readAsStream).toBe(false);
+    });
 });
 
 describe("Send processor tests", async () => {

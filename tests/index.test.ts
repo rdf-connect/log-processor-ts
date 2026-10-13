@@ -26,6 +26,7 @@ describe("Functional tests for the Log processor", () => {
                 label: "test",
                 level: "info",
                 raw: true,
+                readAsStream: false,
             },
             logger,
         );
