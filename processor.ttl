@@ -1,9 +1,10 @@
 @prefix rdfc: <https://w3id.org/rdf-connect#>.
+@prefix rdfcp: <https://w3id.org/rdf-connect/processors#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix sh: <http://www.w3.org/ns/shacl#>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 
-rdfc:LogProcessorJs rdfc:jsImplementationOf rdfc:Processor;
+rdfcp:LogProcessorJs rdfc:jsImplementationOf rdfc:Processor;
     rdfs:label "JS/TS Log Processor";
     rdfs:comment "A simple JS/TS processor to log an incoming stream to the RDF-Connect logging system.";
     rdfc:file <./lib/index.js>;
@@ -11,10 +12,10 @@ rdfc:LogProcessorJs rdfc:jsImplementationOf rdfc:Processor;
     rdfc:entrypoint <./>.
 
 [ ] a sh:NodeShape;
-    sh:targetClass rdfc:LogProcessorJs;
+    sh:targetClass rdfcp:LogProcessorJs;
     sh:property [
         sh:class rdfc:Reader;
-        sh:path rdfc:reader;
+        sh:path rdfcp:reader;
         sh:codeIdentifier "reader";
         sh:name "Input channel";
         sh:description "Input channel from which the messages to log are read.";
@@ -22,7 +23,7 @@ rdfc:LogProcessorJs rdfc:jsImplementationOf rdfc:Processor;
         sh:maxCount 1;
     ], [
         sh:class rdfc:Writer;
-        sh:path rdfc:writer;
+        sh:path rdfcp:writer;
         sh:codeIdentifier "writer";
         sh:name "Output channel";
         sh:description "Optional output channel to which the incoming messages are forwarded after logging.";
@@ -30,7 +31,7 @@ rdfc:LogProcessorJs rdfc:jsImplementationOf rdfc:Processor;
         sh:maxCount 1;
     ], [
         sh:datatype xsd:string;
-        sh:path rdfc:label;
+        sh:path rdfcp:label;
         sh:codeIdentifier "label";
         sh:name "Log label";
         sh:description "Label added to the log messages, which can be used to filter or categorize them; default is log.";
@@ -39,7 +40,7 @@ rdfc:LogProcessorJs rdfc:jsImplementationOf rdfc:Processor;
         sh:maxCount 1;
     ], [
         sh:datatype xsd:string;
-        sh:path rdfc:level;
+        sh:path rdfcp:level;
         sh:codeIdentifier "level";
         sh:name "Log level";
         sh:description "Log level to use, e.g. debug, info, warning, error or critical; default is info.";
@@ -48,7 +49,7 @@ rdfc:LogProcessorJs rdfc:jsImplementationOf rdfc:Processor;
         sh:maxCount 1;
     ], [
         sh:datatype xsd:boolean;
-        sh:path rdfc:raw;
+        sh:path rdfcp:raw;
         sh:codeIdentifier "raw";
         sh:name "Raw output";
         sh:description "If true, log the raw messages to stdout without any formatting instead of to the RDF-Connect logging system; default is false.";
@@ -57,7 +58,7 @@ rdfc:LogProcessorJs rdfc:jsImplementationOf rdfc:Processor;
         sh:maxCount 1;
     ], [
         sh:datatype xsd:boolean;
-        sh:path rdfc:readAsStream;
+        sh:path rdfcp:readAsStream;
         sh:codeIdentifier "readAsStream";
         sh:name "Read as stream";
         sh:description "If true, read the input as a stream and log it chunk by chunk; default is false.";
@@ -66,7 +67,7 @@ rdfc:LogProcessorJs rdfc:jsImplementationOf rdfc:Processor;
         sh:maxCount 1;
     ].
 
-rdfc:SendProcessorJs rdfc:jsImplementationOf rdfc:Processor;
+rdfcp:SendProcessorJs rdfc:jsImplementationOf rdfc:Processor;
   rdfs:label "JS/TS Send Processor";
   rdfs:comment "A simple JS/TS processor to send messages to a writer channel.";
   rdfc:entrypoint <./>;
@@ -74,9 +75,9 @@ rdfc:SendProcessorJs rdfc:jsImplementationOf rdfc:Processor;
   rdfc:class "SendProcessor".
 
 [ ] a sh:NodeShape;
-  sh:targetClass rdfc:SendProcessorJs;
+  sh:targetClass rdfcp:SendProcessorJs;
   sh:property [
-    sh:path rdfc:writer;
+    sh:path rdfcp:writer;
     sh:codeIdentifier "writer";
     sh:name "Output channel";
     sh:description "Output channel to which the messages are written.";
@@ -84,7 +85,7 @@ rdfc:SendProcessorJs rdfc:jsImplementationOf rdfc:Processor;
     sh:maxCount 1;
     sh:class rdfc:Writer;
   ], [
-    sh:path rdfc:msg;
+    sh:path rdfcp:msg;
     sh:codeIdentifier "msgs";
     sh:name "Messages";
     sh:description "Messages to send, one string per message.";

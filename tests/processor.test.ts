@@ -5,17 +5,18 @@ import * as path from "path";
 import { LogProcessor, SendProcessor } from "../src";
 
 describe("Log processor tests", async () => {
-    test("rdfc:LogProcessorJs is properly defined", async () => {
+    test("rdfcp:LogProcessorJs is properly defined", async () => {
         const processorConfig = `
         @prefix rdfc: <https://w3id.org/rdf-connect#>.
+        @prefix rdfcp: <https://w3id.org/rdf-connect/processors#>.
 
-        <http://example.com/ns#processor> a rdfc:LogProcessorJs;
-          rdfc:reader <jr>;
-          rdfc:writer <jw>;
-          rdfc:label "test";
-          rdfc:level "warn";
-          rdfc:raw true;
-          rdfc:readAsStream false.
+        <http://example.com/ns#processor> a rdfcp:LogProcessorJs;
+          rdfcp:reader <jr>;
+          rdfcp:writer <jw>;
+          rdfcp:label "test";
+          rdfcp:level "warn";
+          rdfcp:raw true;
+          rdfcp:readAsStream false.
         `;
 
         const helper = new ProcHelper<LogProcessor>();
@@ -43,12 +44,13 @@ describe("Log processor tests", async () => {
         expect(processor.readAsStream).toBe(false);
     });
 
-    test("rdfc:LogProcessorJs falls back to its default values", async () => {
+    test("rdfcp:LogProcessorJs falls back to its default values", async () => {
         const processorConfig = `
         @prefix rdfc: <https://w3id.org/rdf-connect#>.
+        @prefix rdfcp: <https://w3id.org/rdf-connect/processors#>.
 
-        <http://example.com/ns#processor> a rdfc:LogProcessorJs;
-          rdfc:reader <jr>.
+        <http://example.com/ns#processor> a rdfcp:LogProcessorJs;
+          rdfcp:reader <jr>.
         `;
 
         const helper = new ProcHelper<LogProcessor>();
@@ -73,13 +75,14 @@ describe("Log processor tests", async () => {
 });
 
 describe("Send processor tests", async () => {
-    test("rdfc:SendProcessorJs is properly defined", async () => {
+    test("rdfcp:SendProcessorJs is properly defined", async () => {
         const processorConfig = `
         @prefix rdfc: <https://w3id.org/rdf-connect#>.
+        @prefix rdfcp: <https://w3id.org/rdf-connect/processors#>.
 
-        <http://example.com/ns#processor> a rdfc:SendProcessorJs;
-          rdfc:msg "Hello", "World";
-          rdfc:writer <jw>.
+        <http://example.com/ns#processor> a rdfcp:SendProcessorJs;
+          rdfcp:msg "Hello", "World";
+          rdfcp:writer <jw>.
         `;
 
         const helper = new ProcHelper<SendProcessor>();
