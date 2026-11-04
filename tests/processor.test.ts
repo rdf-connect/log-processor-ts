@@ -11,8 +11,8 @@ describe("Log processor tests", async () => {
         @prefix rdfcp: <https://w3id.org/rdf-connect/processors#>.
 
         <http://example.com/ns#processor> a rdfcp:LogProcessorJs;
-          rdfcp:reader <jr>;
-          rdfcp:writer <jw>;
+          rdfcp:input <jr>;
+          rdfcp:output <jw>;
           rdfcp:label "test";
           rdfcp:level "warn";
           rdfcp:raw true;
@@ -50,7 +50,7 @@ describe("Log processor tests", async () => {
         @prefix rdfcp: <https://w3id.org/rdf-connect/processors#>.
 
         <http://example.com/ns#processor> a rdfcp:LogProcessorJs;
-          rdfcp:reader <jr>.
+          rdfcp:input <jr>.
         `;
 
         const helper = new ProcHelper<LogProcessor>();
@@ -82,7 +82,7 @@ describe("Send processor tests", async () => {
 
         <http://example.com/ns#processor> a rdfcp:SendProcessorJs;
           rdfcp:msg "Hello", "World";
-          rdfcp:writer <jw>.
+          rdfcp:output <jw>.
         `;
 
         const helper = new ProcHelper<SendProcessor>();

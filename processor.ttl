@@ -15,7 +15,7 @@ rdfcp:LogProcessorJs rdfc:jsImplementationOf rdfc:Processor;
     sh:targetClass rdfcp:LogProcessorJs;
     sh:property [
         sh:class rdfc:Reader;
-        sh:path rdfcp:reader;
+        sh:path rdfcp:input;
         sh:codeIdentifier "reader";
         sh:name "Input channel";
         sh:description "Input channel from which the messages to log are read.";
@@ -23,7 +23,7 @@ rdfcp:LogProcessorJs rdfc:jsImplementationOf rdfc:Processor;
         sh:maxCount 1;
     ], [
         sh:class rdfc:Writer;
-        sh:path rdfcp:writer;
+        sh:path rdfcp:output;
         sh:codeIdentifier "writer";
         sh:name "Output channel";
         sh:description "Optional output channel to which the incoming messages are forwarded after logging.";
@@ -77,7 +77,7 @@ rdfcp:SendProcessorJs rdfc:jsImplementationOf rdfc:Processor;
 [ ] a sh:NodeShape;
   sh:targetClass rdfcp:SendProcessorJs;
   sh:property [
-    sh:path rdfcp:writer;
+    sh:path rdfcp:output;
     sh:codeIdentifier "writer";
     sh:name "Output channel";
     sh:description "Output channel to which the messages are written.";
